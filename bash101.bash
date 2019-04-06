@@ -22,7 +22,7 @@ function func_params {
   # parameters are positional, you can refer to them with $n or ${n}
   if [ $# -gt 9 ]; then
     # Note that you have to use ${} for more than 9 parameters
-    echo "I was given a ton of parameters, the 10th one is ${10}, not $10"
+    echo "I was given lots of parameters, the 10th one is ${10}, not $10"
   fi
   # [ is actually a bash builtin
 
@@ -85,7 +85,22 @@ function scope_vars {
   echo "...but not subshells unless they're exported"
   bash -c 'global_vars' # global_vars would not be available if it wasn't exported
 }
-# Subshells get weird very quickly. I encourage the reader to do their own tinkering here.
+
+# sometimes it's easier to pass arrays by name
+function pass_by_nameref {
+  local -n _some_var1=${1}
+  local -n _some_var2=${2}
+  echo ${_some_var1[@]}
+  echo ${_some_var2[@]}
+}
+
+function by_ref {
+  local -a pass_array1=( "I" "am" "an" "array" )
+  local -a pass_array2=( "I" "am" "another" "array" )
+  pass_by_nameref pass_array1 pass_array2
+}
+
+# Subshells get weird very quickly. I encourage you to do your own tinkering here.
 
 # I/O REDIRECTION AND PIPES
 
@@ -216,6 +231,21 @@ function term_colors {
   local X_FMT=$'\e[0m'
   echo "${C_BOLD}Use magic ANSI strings${X_FMT} for ${C_RED}colors!${X_FMT}"
   echo "${C_RED}Don't forget to clear formatting"
+}
+
+function async_things {
+  # You can background processes with &
+  echo "With & async"
+  echo "wait 1" && sleep 1 && echo "done 1" &
+  echo "wait 2" && sleep 2 && echo "done 2" &
+  echo "wait 3" && sleep 3 && echo "done 3" &
+  echo "wait 4" && sleep 4 && echo "done 4" &
+  echo "wait 5" && sleep 5 && echo "done 5" &
+
+  # an alternative to this is xargs
+  echo
+  echo "With xargs"
+  seq 1 5 | xargs -n1 -P0 bash -c 'echo "xargs wait $1" && sleep $1 && echo "xargs done $1"' /dev/null
 }
 
 # Useful external tools:
