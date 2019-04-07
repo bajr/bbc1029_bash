@@ -1,5 +1,15 @@
 # FUNCTIONS
 
+# Follow along:
+# https://github.com/bajr/bbc2019_bash
+
+# In true Beaver BarCamp tradition, everything here was prepared today;
+# so I probably missed some things
+
+# First, some basics.
+# help, type
+# if, for, while, case, select
+
 # Defining functions is easy, just function name { }
 function basic_func {
   # functions can print output
@@ -19,6 +29,7 @@ function func_params {
   # $# tells you how many parameters the function was given
   echo "I was given $# parameters."
 
+  echo "Parameter 1 is $1"
   # parameters are positional, you can refer to them with $n or ${n}
   if [ $# -gt 9 ]; then
     # Note that you have to use ${} for more than 9 parameters
@@ -63,7 +74,6 @@ function basic_vars {
   # local vars are available to the function they're declared in
   local local_var="I'm local"
   # but they're also available to all functions subsequently called
-
 }
 
 # global vars are available, even after the function that created them has gone out of scope
@@ -135,7 +145,7 @@ function basic_arrays {
 
   echo
   echo "You can iterate elements of an array with a for loop"
-  for i in ${my_array[@]}; do
+  for i in "${my_array[@]}"; do
     echo "  ${i}"
   done
 }
@@ -155,7 +165,7 @@ function associative_arrays {
   echo "Values : ${what_is[@]}"
   echo "me & you : ${what_is[me]}"
   echo "jank     : ${what_is[jank]}"
-  local var_jank
+  local var_jank="jank"
   local bad_array=( "${what_is[${var_jank}]}" )
   local jank_array=( ${what_is[${var_jank}]} )
   echo "${#bad_array[@]} elements in bad_array"
